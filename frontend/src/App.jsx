@@ -13,13 +13,25 @@ const money = n => `₹${Number(n || 0).toLocaleString('en-IN')}`;
 const fallbackProducts = [
   { _id:'demo1', name:'Premium Almonds', category:'Nuts', price:780, unit:'500 g', image:'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=700', description:'Crunchy premium almonds, carefully selected.' },
   { _id:'demo2', name:'Whole Cashews', category:'Nuts', price:690, unit:'500 g', image:'https://images.unsplash.com/photo-1563412885-139a6d6e6a4d?w=700', description:'Creamy whole cashews for snacks and cooking.' },
-  { _id:'demo3', name:'Raw Groundnuts', category:'Pulses', price:160, unit:'1 kg', image:'https://images.unsplash.com/photo-1567892737950-30c4db37cd89?w=700', description:'Farm-fresh groundnuts with natural flavour.' },
+  { _id:'demo3', name:'Raw Groundnuts', category:'Pulses', price:160, unit:'1 kg', image:'https://images.pexels.com/photos/7717463/pexels-photo-7717463.jpeg?w=700', description:'Farm-fresh groundnuts with natural flavour.' },
   { _id:'demo4', name:'Green Moong Dal', category:'Pulses', price:145, unit:'1 kg', image:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=700', description:'Clean, nutritious whole green gram.' },
-  { _id:'demo5', name:'Golden Raisins', category:'Dry Fruits', price:320, unit:'500 g', image:'https://images.unsplash.com/photo-1596591606975-97ee5cef3a1e?w=700', description:'Naturally sweet raisins for everyday snacking.' },
-  { _id:'demo6', name:'Pistachios', category:'Dry Fruits', price:850, unit:'250 g', image:'https://images.unsplash.com/photo-1615485500704-8e990f9900f5?w=700', description:'Delicious pistachios packed with goodness.' },
-  { _id:'demo7', name:'Toor Dal', category:'Pulses', price:185, unit:'1 kg', image:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=700', description:'Everyday quality toor dal.' },
+  { _id:'demo5', name:'Golden Raisins', category:'Dry Fruits', price:320, unit:'500 g', image:'https://images.unsplash.com/photo-1691657917109-c6e027eac44a?w=700', description:'Naturally sweet raisins for everyday snacking.' },
+  { _id:'demo6', name:'Pistachios', category:'Dry Fruits', price:850, unit:'250 g', image:'https://images.unsplash.com/photo-1723110568223-f83071ddd4e5?w=700', description:'Delicious pistachios packed with goodness.' },
+  { _id:'demo7', name:'Toor Dal', category:'Pulses', price:185, unit:'1 kg', image:'https://images.unsplash.com/photo-1594900799266-0e56587ba586?w=700', description:'Everyday quality toor dal.' },
   { _id:'demo8', name:'Walnut Kernels', category:'Nuts', price:560, unit:'250 g', image:'https://images.unsplash.com/photo-1563412885-139a6d6e6a4d?w=700', description:'Rich walnut kernels, ready to enjoy.' }
 ];
+
+const productImage = p => {
+  const images = {
+    'Raw Groundnuts': 'https://images.pexels.com/photos/7717463/pexels-photo-7717463.jpeg?w=700',
+    'Golden Raisins': 'https://images.unsplash.com/photo-1691657917109-c6e027eac44a?w=700',
+    'Pistachios': 'https://images.unsplash.com/photo-1723110568223-f83071ddd4e5?w=700',
+    'Green Moong Dal': 'https://images.unsplash.com/photo-ecpymDlXwHE?w=700',
+    'Toor Dal': 'https://images.unsplash.com/photo-1594900799266-0e56587ba586?w=700',
+    'Walnut Kernels': 'https://images.unsplash.com/photo-1563412885-139a6d6e6a4d?w=700'
+  };
+  return images[p.name] || p.image || fallbackProducts[0].image;
+};
 
 const copy = {
   en: {
@@ -365,7 +377,7 @@ export default function App() {
           </div>
 
           <div className="hero-image">
-            <img src="https://images.unsplash.com/photo-1604495772376-9657f0035eb5?w=1100" alt="Assorted nuts and dry fruits"/>
+            <img src="https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=1000" alt="Assorted nuts and dry fruits"/>
             <div className="image-note">
               <Sprout/>
               <span><b>Goodness in every handful</b><small>Simple food. Honest sourcing.</small></span>
@@ -414,8 +426,14 @@ export default function App() {
             {visible.map(p => (
               <article className="product-card" key={p._id}>
                 <div className="product-photo">
-                  <img src={p.image || fallbackProducts[0].image} alt={p.name}
-                    onError={e => { e.currentTarget.src = fallbackProducts[0].image; }}/>
+                  <img
+                    src={productImage(p)}
+                    alt={p.name}
+                    onError={e => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = fallbackProducts[0].image;
+                    }}
+                  />
                   <span>{p.category}</span>
                 </div>
                 <div className="product-info">
@@ -498,7 +516,7 @@ export default function App() {
                   <div className="cart-lines">
                     {cartItems.map(p => (
                       <div className="cart-line" key={p._id}>
-                        <img src={p.image} alt=""/>
+                        <img src={productImage(p)} alt={p.name}/>
                         <div className="line-info">
                           <b>{p.name}</b>
                           <small>{money(p.price)} / {p.unit}</small>
